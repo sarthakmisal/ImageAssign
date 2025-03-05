@@ -1,17 +1,70 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 1
+      Camera & Crop
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="container" *ngIf="!croppingMode">
+    <!-- Display captured image -->
+    <div *ngIf="capturedPic" class="image-container">
+      <img [src]="capturedPic" alt="Captured Image">
+    </div>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+    <!-- No image message -->
+    <div *ngIf="!capturedPic" class="no-image-message">
+      <ion-icon name="camera" size="large"></ion-icon>
+      <p>No image captured yet</p>
+    </div>
+
+    <!-- Buttons -->
+    <div class="action-buttons">
+      <ion-button expand="full" (click)="takePicture()">
+        <ion-icon slot="start" name="camera"></ion-icon>
+        Take Picture
+      </ion-button>
+
+      <ion-button *ngIf="capturedPic" expand="full" (click)="startCropping()">
+        <ion-icon slot="start" name="crop"></ion-icon>
+        Crop Image
+      </ion-button>
+
+      <ion-button *ngIf="capturedPic" expand="full" color="danger" (click)="resetImage()">
+        <ion-icon slot="start" name="trash"></ion-icon>
+        Delete Image
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Cropping interface -->
+  <div class="cropping-container" *ngIf="croppingMode">
+    <div class="crop-canvas-wrapper">
+      <canvas #imageCanvas (mousedown)="onCanvasMouseDown($event)" (mousemove)="onCanvasMouseMove($event)"
+        (mouseup)="onCanvasMouseUp()" (mouseleave)="onCanvasMouseUp()">
+      </canvas>
+    </div>
+
+    <div class="crop-preview">
+      <h4>Preview</h4>
+      <img #croppingPreview>
+    </div>
+
+    <div class="crop-actions">
+      <ion-button (click)="applyCrop()">
+        <ion-icon slot="start" name="checkmark"></ion-icon>
+        Apply Crop
+      </ion-button>
+
+      <ion-button (click)="cancelCrop()" fill="outline">
+        <ion-icon slot="start" name="close"></ion-icon>
+        Cancel
+      </ion-button>
+    </div>
+
+    <div class="crop-instructions">
+      <p>Drag the corners to adjust the crop area</p>
+    </div>
+  </div>
 </ion-content>
